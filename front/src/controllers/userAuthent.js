@@ -241,8 +241,14 @@ const adminRegister = async (req, res) => {
             role: user.role,
         }
         const token = jwt.sign({ _id: user._id, emailId: emailId, role: role }, "wsac", { expiresIn: 60 * 60 })
-        res.cookie('token', token, { maxAge: 60 * 60 * 1000 })
-        
+        // res.cookie('token', token, { maxAge: 60 * 60 * 1000 })
+        res.cookie("token", token, {
+    httpOnly: true,
+    secure: true,      // REQUIRED for Render + Vercel
+    sameSite: "none",  // REQUIRED for cross-origin
+    maxAge: 60 * 60 * 1000
+});
+
         res.status(201).json({
             user: reply,
             message: 'user created successfully'
@@ -274,5 +280,6 @@ const getAllMember = async (req, res) => {
         res.status(500).send("SERVER ERROR")
     }
 }
+
 
 module.exports = { register, login, logout, adminRegister, deleteprofile, getAllMember }

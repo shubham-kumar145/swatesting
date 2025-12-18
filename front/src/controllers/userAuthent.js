@@ -242,12 +242,21 @@ const adminRegister = async (req, res) => {
         }
         const token = jwt.sign({ _id: user._id, emailId: emailId, role: role }, "wsac", { expiresIn: 60 * 60 })
         // res.cookie('token', token, { maxAge: 60 * 60 * 1000 })
-        res.cookie("token", token, {
-    httpOnly: true,
-    secure: true,      // REQUIRED for Render + Vercel
-    sameSite: "none",  // REQUIRED for cross-origin
-    maxAge: 60 * 60 * 1000
+//         res.cookie("token", token, {
+//     httpOnly: true,
+//     secure: true,      // REQUIRED for Render + Vercel
+//     sameSite: "none",  // REQUIRED for cross-origin
+//     maxAge: 60 * 60 * 1000
+// });
+            res.cookie("token", token, {
+  httpOnly: true,
+  secure: true,
+  sameSite: "none",
+  path: "/",                    // 🔥 REQUIRED
+  domain: "swatesting-1.onrender.com", // 🔥 REQUIRED
+  maxAge: 60 * 60 * 1000
 });
+
 
         res.status(201).json({
             user: reply,
@@ -283,3 +292,4 @@ const getAllMember = async (req, res) => {
 
 
 module.exports = { register, login, logout, adminRegister, deleteprofile, getAllMember }
+

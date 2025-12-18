@@ -4,6 +4,8 @@ const redisClient = require('../config/redis')
 const userMiddleware = async (req, res, next) => {
     try {
         console.log("Cookies received:", req.cookies);
+        console.log("request body", req.body);
+        
         const {token} = req.cookies
         if(!token){
             throw new Error("token is not present")
@@ -33,3 +35,4 @@ const userMiddleware = async (req, res, next) => {
 
 
 module.exports = userMiddleware
+

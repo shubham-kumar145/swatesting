@@ -29,10 +29,13 @@ const userMiddleware = async (req, res, next) => {
         next()
          
     } catch (err) {
+        console.log("Cookies received:", req.cookies);
+        console.log("request body", req.body);
         res.status(400).send("ERROR "+err.message)
     }
 }
 
 
 module.exports = userMiddleware
+
 

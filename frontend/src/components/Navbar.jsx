@@ -35,12 +35,12 @@ const Navbar = () => {
                     alt="Logo"
                     className="w-8 h-8"
                 />
-                <h1 className="text-xl font-bold tracking-wide text-white">
-                   Hello krisha (badmossssssss)
-                </h1>
                 {/* <h1 className="text-xl font-bold tracking-wide text-white">
-                    Stylish <span className="text-blue-400">Wear</span> Aesthetics
+                   Hello krisha (badmossssssss)
                 </h1> */}
+                 <h1 className="text-xl font-bold tracking-wide text-white">
+                    Stylish <span className="text-blue-400">Wear</span> Aesthetics
+                </h1> 
             </div>
 
             {/* Search Input */}
@@ -194,3 +194,4 @@ export default Navbar;
 
 
 // export default Navbar;
+

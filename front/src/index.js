@@ -1,21 +1,72 @@
+// // require('dotenv').config();
+// // const express = require('express');
+// // const app = express();
+// // app.set("trust proxy", 1);
+// // const main = require("./config/db");
+// // const redisClient = require('./config/redis')
+// // const cookieParser = require('cookie-parser')
+// // const authRouter = require('./routes/userAuth');
+// // const productRouter = require('./routes/productAuth');
+// // const adminRoutor = require('./routes/adminAuth');
+// // const fileUpload = require("express-fileupload")
+// // const cors = require('cors');
+// // app.use(express.json());
+// // app.use(cookieParser())
+// // // app.use(cors({
+// // //     origin: 'http://localhost:5173', 
+// // //     credentials: true               
+// // // }));
+// // app.use(cors({
+// //     origin: [
+// //         "http://localhost:5173",
+// //         "https://swatesting.vercel.app"
+// //     ],
+// //     credentials: true
+// // }));
+// // app.use(fileUpload({
+// //     useTempFiles: true
+// // }))
+// // app.use('/user', authRouter)
+// // app.use('/product', productRouter)
+// // app.use('/admin', adminRoutor)
+// // const InitalizeConnection = async () => {
+// //     try {
+
+// //         await Promise.all([main(), redisClient.connect()]);
+// //         console.log("DB Connected");
+
+// //         app.listen(5000, () => {
+// //             console.log("Server listening at port number: 5000");
+// //         })
+
+// //     }
+// //     catch (err) {
+// //         console.log("Error: " + err);
+// //     }
+// // }
+
+
+// // InitalizeConnection();
+
+
 // require('dotenv').config();
 // const express = require('express');
 // const app = express();
+
 // app.set("trust proxy", 1);
+
 // const main = require("./config/db");
-// const redisClient = require('./config/redis')
-// const cookieParser = require('cookie-parser')
+// const redisClient = require('./config/redis');
+// const cookieParser = require('cookie-parser');
 // const authRouter = require('./routes/userAuth');
 // const productRouter = require('./routes/productAuth');
 // const adminRoutor = require('./routes/adminAuth');
-// const fileUpload = require("express-fileupload")
+// const fileUpload = require("express-fileupload");
 // const cors = require('cors');
+
 // app.use(express.json());
-// app.use(cookieParser())
-// // app.use(cors({
-// //     origin: 'http://localhost:5173', 
-// //     credentials: true               
-// // }));
+// app.use(cookieParser());
+
 // app.use(cors({
 //     origin: [
 //         "http://localhost:5173",
@@ -23,78 +74,90 @@
 //     ],
 //     credentials: true
 // }));
-// app.use(fileUpload({
-//     useTempFiles: true
-// }))
-// app.use('/user', authRouter)
-// app.use('/product', productRouter)
-// app.use('/admin', adminRoutor)
+
+// app.use(fileUpload({ useTempFiles: true }));
+
+// app.use('/user', authRouter);
+// app.use('/product', productRouter);
+// app.use('/admin', adminRoutor);
+
 // const InitalizeConnection = async () => {
 //     try {
-
 //         await Promise.all([main(), redisClient.connect()]);
 //         console.log("DB Connected");
 
-//         app.listen(5000, () => {
-//             console.log("Server listening at port number: 5000");
-//         })
-
-//     }
-//     catch (err) {
+//         const PORT = process.env.PORT || 5000;
+//         app.listen(PORT, () => {
+//             console.log(`Server listening at port number: ${PORT}`);
+//         });
+//     } catch (err) {
 //         console.log("Error: " + err);
 //     }
-// }
-
+// };
 
 // InitalizeConnection();
 
 
-require('dotenv').config();
-const express = require('express');
+
+require("dotenv").config();
+const express = require("express");
 const app = express();
 
+/* ===== REQUIRED FOR SECURE COOKIES ON RENDER ===== */
 app.set("trust proxy", 1);
 
 const main = require("./config/db");
-const redisClient = require('./config/redis');
-const cookieParser = require('cookie-parser');
-const authRouter = require('./routes/userAuth');
-const productRouter = require('./routes/productAuth');
-const adminRoutor = require('./routes/adminAuth');
+const redisClient = require("./config/redis");
+const cookieParser = require("cookie-parser");
+const authRouter = require("./routes/userAuth");
+const productRouter = require("./routes/productAuth");
+const adminRouter = require("./routes/adminAuth");
 const fileUpload = require("express-fileupload");
-const cors = require('cors');
+const cors = require("cors");
 
+/* ================= MIDDLEWARE ================= */
 app.use(express.json());
 app.use(cookieParser());
 
-app.use(cors({
+app.use(
+  cors({
     origin: [
-        "http://localhost:5173",
-        "https://swatesting.vercel.app"
+      "http://localhost:5173",
+      "https://swatesting.vercel.app",
     ],
-    credentials: true
-}));
+    credentials: true,
+  })
+);
 
-app.use(fileUpload({ useTempFiles: true }));
+app.use(
+  fileUpload({
+    useTempFiles: true,
+  })
+);
 
-app.use('/user', authRouter);
-app.use('/product', productRouter);
-app.use('/admin', adminRoutor);
+/* ================= ROUTES ================= */
+app.use("/user", authRouter);
+app.use("/product", productRouter);
+app.use("/admin", adminRouter);
 
-const InitalizeConnection = async () => {
-    try {
-        await Promise.all([main(), redisClient.connect()]);
-        console.log("DB Connected");
+/* ================= START SERVER ================= */
+const initializeConnection = async () => {
+  try {
+    await Promise.all([
+      main(),
+      redisClient.isOpen ? Promise.resolve() : redisClient.connect(),
+    ]);
 
-        const PORT = process.env.PORT || 5000;
-        app.listen(PORT, () => {
-            console.log(`Server listening at port number: ${PORT}`);
-        });
-    } catch (err) {
-        console.log("Error: " + err);
-    }
+    console.log("DB & Redis Connected");
+
+    const PORT = process.env.PORT || 5000;
+    app.listen(PORT, () => {
+      console.log(`Server listening at port number: ${PORT}`);
+    });
+  } catch (err) {
+    console.error("Startup Error:", err);
+    process.exit(1);
+  }
 };
 
-InitalizeConnection();
-
-
+initializeConnection();

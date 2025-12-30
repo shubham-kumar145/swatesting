@@ -23,6 +23,7 @@ app.use(
     origin: [
       "http://localhost:5173",
       "https://swatesting.vercel.app",
+      "https://swa-shopping.vercel.app",
     ],
     credentials: true,
   })
@@ -60,4 +61,5 @@ const initializeConnection = async () => {
 };
 
 initializeConnection();
+
 
